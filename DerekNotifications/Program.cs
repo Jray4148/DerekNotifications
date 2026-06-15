@@ -33,7 +33,6 @@ builder.Services.AddTransient<ZohoTokenRefreshHandler>();
 builder.Services.Configure<AppSettingsService>(builder.Configuration);
 builder.Services.AddScoped<IIssueFactoryYouTrack, IssueFactoryYouTrack>();
 builder.Services.AddScoped<IEmailFactory, EmailFactory>();
-builder.Services.AddScoped<ITasksServiceLessAnnoying, TasksServiceLessAnnoying>();
 
 // HttpClient for Zoho Invoices
 builder.Services.AddHttpClient<IInvoicesServices, InvoicesServiceZoho>(client =>
@@ -41,6 +40,12 @@ builder.Services.AddHttpClient<IInvoicesServices, InvoicesServiceZoho>(client =>
     client.BaseAddress = new Uri(Constants.Zoho.InvoicesUrl);
     client.DefaultRequestHeaders.Add("X-com-zoho-invoice-organizationid", Constants.Zoho.OrganizationId);
 }).AddHttpMessageHandler<ZohoTokenRefreshHandler>();
+
+builder.Services.AddHttpClient<ITasksServiceLessAnnoying, TasksServiceLessAnnoying>(client =>
+{
+    client.BaseAddress = new Uri(Constants.LessAnnoying.Url);
+    client.DefaultRequestHeaders.Add("Authorization", $"{builder.Configuration.GetValue<string>("LESS_ANNOYING_API_TOKEN")}");
+});
 
 // HttpClient for Zoho Contacts
 builder.Services.AddHttpClient<IContactsService, ContactsServiceZoho>(client =>

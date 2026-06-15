@@ -55,4 +55,9 @@ public abstract class Constants
                                             Thanks for your business
                                             """;
     }
+    
+    public static class LessAnnoying
+    {
+       public const string Url = "https://api.lessannoyingcrm.com/v2/";
+    }
 }
