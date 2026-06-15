@@ -33,6 +33,7 @@ builder.Services.AddTransient<ZohoTokenRefreshHandler>();
 builder.Services.Configure<AppSettingsService>(builder.Configuration);
 builder.Services.AddScoped<IIssueFactoryYouTrack, IssueFactoryYouTrack>();
 builder.Services.AddScoped<IEmailFactory, EmailFactory>();
+builder.Services.AddScoped<ITasksServiceLessAnnoying, TasksServiceLessAnnoying>();
 
 // HttpClient for Zoho Invoices
 builder.Services.AddHttpClient<IInvoicesServices, InvoicesServiceZoho>(client =>
