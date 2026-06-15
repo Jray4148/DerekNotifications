@@ -1,0 +1,18 @@
+# Application Configuration
+app_name = "derek-notifications"
+
+# AWS Configuration
+aws_region = "us-east-1"
+# environment = "prod"
+
+# Docker Image
+image_tag = "latest"
+
+# Application Secrets - REPLACE WITH YOUR ACTUAL VALUES
+rsi_api_token = "rsi-api-token-here"
+yt_api_token = "your-youtrack-api-token-here"
+aws_access_key_id = "your-aws-access-key-here"
+aws_secret_access_key = "your-aws-secret-access-key-here"
+zoho_refresh_token=
+zoho_client_id=
+zoho_client_secret=
