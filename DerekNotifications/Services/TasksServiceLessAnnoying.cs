@@ -23,6 +23,7 @@ public class TasksServiceLessAnnoying(
                 {
                     StartDate = request.StartDate,
                     EndDate = request.EndDate,
+                    UserFilter = new List<string> { "612369" }
                 }
             };
             
