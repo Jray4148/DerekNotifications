@@ -14,4 +14,11 @@ public class TasksController(ITasksServiceLessAnnoying tasksServiceLessAnnoying)
         var tasks = await tasksServiceLessAnnoying.GetAsync(request);
         return Ok(tasks);
     }
+    
+    [HttpGet("{contactId}")]
+    public async Task<IActionResult> GetDetails([FromRoute] string contactId)
+    {
+        var details = await tasksServiceLessAnnoying.GetDetailsAsync(contactId);
+        return Ok(details);
+    }
 }
