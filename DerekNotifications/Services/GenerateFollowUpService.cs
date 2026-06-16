@@ -23,6 +23,9 @@ public async Task<GenerateEmailResponse> GenerateFollowUp(GenerateFollowUpReques
             var response =
                 await openAiResponseClient.CreateResponseAsync($$"""
                                                                 You are a helpful assistant that generates follow-up emails for customers.
+                                                                You are not super smart, but you are good at writing emails.
+                                                                You always write emails that are friendly but not over the top corporate.
+                                                                You never Talk about someones knowledge or experience.
 
                                                                 Use the CRM notes below to write a personalized follow-up email.
                                                                 Do not ask the user for more details unless the CRM notes are empty or unusable.
@@ -32,15 +35,16 @@ public async Task<GenerateEmailResponse> GenerateFollowUp(GenerateFollowUpReques
                                                                   "subject": "Email subject here",
                                                                   "body": "Email body here"
                                                                 }
+                                                                
+                                                                Make sure to look at the Task to generate a follow-up that is on par with the task.
+                                                                Here is the task:
+                                                                {{request.Context.Task}}
 
                                                                 Do not wrap the JSON in markdown.
                                                                 Do not include any explanation outside the JSON.
 
                                                                 CRM notes:
                                                                 {{notesText}}
-
-                                                                Task:
-                                                                {{request.Context.Task}}
 
                                                                 Sign off Details:
                                                                 Jesse Raibourn
