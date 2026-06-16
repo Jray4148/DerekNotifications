@@ -193,7 +193,8 @@ public class TasksServiceLessAnnoying(
             Source = "jesse@roughnecksoftware.com",
             Destination = new Destination
             {
-                ToAddresses = [emailAddress]
+                ToAddresses = [emailAddress],
+                CcAddresses = ["jesse@roughnecksoftware.com"]
             },
             Message = new Message
             {
