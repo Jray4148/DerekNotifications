@@ -90,9 +90,7 @@ public class TasksServiceLessAnnoying(
     {
         try
         {
-            var result = JsonSerializer.Deserialize<T>(
-                responseBody,
-                new JsonSerializerOptions
+            var result = JsonSerializer.Deserialize<T>(responseBody, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
