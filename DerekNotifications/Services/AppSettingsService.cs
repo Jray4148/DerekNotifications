@@ -5,6 +5,7 @@ public class AppSettingsService
     public required Rsi Rsi { get; set; }
     public required Yt Yt { get; set; }
     public required Zoho Zoho { get; set; }
+    public required OpenAi OpenAi { get; set; }
 }
 
 public class Rsi
@@ -35,4 +36,10 @@ public class Zoho
     public required string RefreshToken { get; set; }
     public required string ClientId { get; set; }
     public required string ClientSecret { get; set; }
+}
+
+public class OpenAi
+{
+    public required string ApiKey { get; set; }
+    public required string Model { get; set; }
 }

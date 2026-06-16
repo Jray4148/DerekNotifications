@@ -18,12 +18,12 @@ public class IssueFactoryYouTrackTests
         {
             Yt = new Yt
             {
-                EFile25ProjectId = "TEST-PROJECT-ID", 
-                EFile25ProjectName = "TEST-PROJECT-NAME", 
+                EFile25ProjectId = "TEST-PROJECT-ID",
+                EFile25ProjectName = "TEST-PROJECT-NAME",
                 ApiToken = "test-token"
             },
-            Rsi = new Rsi 
-            { 
+            Rsi = new Rsi
+            {
                 ApiToken = "test-token",
                 Emails = new Emails
                 {
@@ -34,7 +34,13 @@ public class IssueFactoryYouTrackTests
                     EFileBillMeTo = "billme@example.com"
                 }
             },
-            Zoho = new Zoho { ClientId = "id", ClientSecret = "secret", RefreshToken = "token" }
+            Zoho = new Zoho
+            {
+                ClientId = "id",
+                ClientSecret = "secret",
+                RefreshToken = "token"
+            },
+            OpenAi = null
         };
 
         // Wrap settings in IOptions and instantiate the factory

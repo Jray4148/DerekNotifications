@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using OpenAI.Responses;
 
 DotNetEnv.Env.Load();
 
@@ -33,6 +34,7 @@ builder.Services.AddTransient<ZohoTokenRefreshHandler>();
 builder.Services.Configure<AppSettingsService>(builder.Configuration);
 builder.Services.AddScoped<IIssueFactoryYouTrack, IssueFactoryYouTrack>();
 builder.Services.AddScoped<IEmailFactory, EmailFactory>();
+builder.Services.AddScoped<IGenerateFollowUpService, GenerateFollowUpService>();
 
 // HttpClient for Zoho Invoices
 builder.Services.AddHttpClient<IInvoicesServices, InvoicesServiceZoho>(client =>
@@ -81,6 +83,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_GekDUPL2X"
         };
     });
+
+
+builder.Services.AddSingleton<OpenAIResponseClient>(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<AppSettingsService>>().Value;
+    return string.IsNullOrWhiteSpace(settings.OpenAi.ApiKey)
+        ? throw new InvalidOperationException("Missing OpenAI:ApiKey configuration.")
+        : new OpenAIResponseClient(settings.OpenAi.Model, settings.OpenAi.ApiKey);
+});
+
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
