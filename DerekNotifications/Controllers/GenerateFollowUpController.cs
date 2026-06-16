@@ -20,7 +20,7 @@ public class GenerateFollowUpController(
     [HttpPost("send-email")]
     public async Task<IActionResult> SendEmail([FromBody] EmailRequest emailRequest)
     {
-        await tasksServiceLessAnnoying.LogEmailInLessAnnoyingAsync(emailRequest);
+        await tasksServiceLessAnnoying.SendEmailAsync(emailRequest);
         return Ok();
     }
 }

@@ -1,5 +1,8 @@
+using System.Net;
 using System.Text;
 using System.Text.Json;
+using Amazon.SimpleEmail;
+using Amazon.SimpleEmail.Model;
 using DerekNotifications.Models.Requests;
 using DerekNotifications.Models.Responses;
 
@@ -9,7 +12,7 @@ public interface ITasksServiceLessAnnoying
 {
     Task<LessAnnoyingTasksResponse> GetAsync(LessAnnoyingTaskRequest request);
     Task<LessAnnoyingNotesResponse> GetDetailsAsync(string contactId);
-    Task LogEmailInLessAnnoyingAsync(EmailRequest emailRequest);
+    Task SendEmailAsync(EmailRequest email);
 }
 
 public class TasksServiceLessAnnoying(
@@ -95,7 +98,7 @@ public class TasksServiceLessAnnoying(
     /// <param name="emailRequest">The request containing details such as the contact ID, subject, and body of the email to be logged.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     /// <exception cref="Exception">Thrown when the request to the Less Annoying CRM API fails or encounters an issue.</exception>
-    public async Task LogEmailInLessAnnoyingAsync(EmailRequest emailRequest)
+    private async Task LogEmailInLessAnnoyingAsync(EmailRequest emailRequest)
     {
         var emailAddress = await GetEmailAddressAsync(emailRequest.ContactId);
 
@@ -173,5 +176,44 @@ public class TasksServiceLessAnnoying(
         {
             return Task.FromException<T>(exception);
         }
+    }
+
+    /// <summary>
+    /// Sends an email using the provided email request details, including the contact ID, subject, and body.
+    /// </summary>
+    /// <param name="email">The request containing the contact ID, subject, and body for the email.</param>
+    /// <returns>A task that represents the asynchronous operation of sending the email.</returns>
+    /// <exception cref="Exception">Thrown when the email fails to send or an error occurs during the operation.</exception>
+    public async Task SendEmailAsync(EmailRequest email)
+    {
+        var emailAddress = await GetEmailAddressAsync(email.ContactId);
+        var client = new AmazonSimpleEmailServiceClient();
+
+        var sendRequest = new SendEmailRequest
+        {
+            Source = "jesse@roughnecksoftware.com",
+            Destination = new Destination
+            {
+                ToAddresses = [emailAddress]
+            },
+            Message = new Message
+            {
+                Subject = new Content(email.Subject),
+                Body = new Body
+                {
+                    Text = new Content(email.Body),
+                }
+            }
+        };
+
+        try
+        {
+            await client.SendEmailAsync(sendRequest);
+            await LogEmailInLessAnnoyingAsync(email);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Email failed to send email" + ex.Message);
+        }        
     }
 }
