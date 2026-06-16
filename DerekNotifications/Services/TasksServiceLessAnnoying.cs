@@ -9,6 +9,7 @@ public interface ITasksServiceLessAnnoying
 {
     Task<LessAnnoyingTasksResponse> GetAsync(LessAnnoyingTaskRequest request);
     Task<LessAnnoyingNotesResponse> GetDetailsAsync(string contactId);
+    Task LogEmailInLessAnnoyingAsync(EmailRequest emailRequest);
 }
 
 public class TasksServiceLessAnnoying(
@@ -60,6 +61,78 @@ public class TasksServiceLessAnnoying(
             var json = JsonSerializer.Serialize(lacrmRequest);
             var responseBody = await SendPostAsync(json);
             return await DeserializeAsync<LessAnnoyingNotesResponse>(responseBody);
+    }
+
+
+    /// <summary>
+    /// Retrieves the email address associated with the specified contact ID.
+    /// </summary>
+    /// <param name="contactId">The unique identifier of the contact for which the email address is being retrieved.</param>
+    /// <returns>The email address of the contact as a string.</returns>
+    /// <exception cref="Exception">Thrown when no email address is found for the specified contact ID or if the API request fails.</exception>
+    private async Task<string> GetEmailAddressAsync(string contactId)
+    {
+        var lacrmRequest = new LessAnnoyingApiRequest
+        {
+            Function = "GetContact",
+            Parameters = new
+            {
+                ContactId = contactId,
+            }
+        };
+
+        var json = JsonSerializer.Serialize(lacrmRequest);
+        var responseBody = await SendPostAsync(json);
+        var contact = await DeserializeAsync<LessAnnoyingContactResponse>(responseBody);
+
+        return contact.Email.FirstOrDefault()?.Text
+               ?? throw new Exception($"No email address found for contact {contactId}");
+    }
+
+    /// <summary>
+    /// Logs an email in the Less Annoying CRM system based on the provided email request details.
+    /// </summary>
+    /// <param name="emailRequest">The request containing details such as the contact ID, subject, and body of the email to be logged.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <exception cref="Exception">Thrown when the request to the Less Annoying CRM API fails or encounters an issue.</exception>
+    public async Task LogEmailInLessAnnoyingAsync(EmailRequest emailRequest)
+    {
+        var emailAddress = await GetEmailAddressAsync(emailRequest.ContactId);
+
+        var lacrmRequest = new LessAnnoyingApiRequest
+        {
+            Function = "CreateEmail",
+            Parameters = new
+            {
+                ContactIds = new List<string> { emailRequest.ContactId },
+                UserIsSender = true,
+                From = new
+                {
+                    Address = "jesse@roughnecksoftware.com",
+                    Name = "Roughneck Software"
+                },
+                To = new[]
+                {
+                    new
+                    {
+                        Address = emailAddress
+                    }
+                },
+                Cc = new[]
+                {
+                    new
+                    {
+                        Address = "jesse@roughnecksoftware.com"
+                    }
+                },
+                Subject = emailRequest.Subject,
+                Body = emailRequest.Body,
+                Date = DateTime.Now.ToString("yyyy-MM-dd"),
+            }
+        };
+
+        var json = JsonSerializer.Serialize(lacrmRequest);
+        await SendPostAsync(json);
     }
 
     /// <summary>
