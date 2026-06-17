@@ -129,7 +129,7 @@ public class TasksServiceLessAnnoying(
                 },
                 Subject = emailRequest.Subject,
                 Body = emailRequest.Body,
-                Date = DateTime.Now.ToString("yyyy-MM-dd"),
+                Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             }
         };
 
